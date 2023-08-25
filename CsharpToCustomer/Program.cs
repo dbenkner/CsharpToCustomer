@@ -15,23 +15,25 @@ if(conn.State != System.Data.ConnectionState.Open)
 }
 Console.WriteLine("Connection with SQL Server Open");
 var custCtrl = new CustomersController(conn);
-List<Customer> customers = custCtrl.GetAllCustomers();
-foreach(var cust in customers)
+List<Customer> customers = custCtrl.GetCustomersByCity("Cincinnati");
+if (customers == null)
 {
-    Console.WriteLine(cust.ToString());
-}
-
-List<Customer>? customers2 = custCtrl.CusPartialName("C");
-if (customers2 == null)
-{
-    Console.WriteLine("No Customers found!");
+    Console.WriteLine("No Customers Found");
 }
 else
 {
-    foreach(var cust in customers2)
+    foreach (var customer in customers)
     {
-        Console.WriteLine(cust.ToString());
+        Console.WriteLine(customer.ToString());
     }
 }
+customers.Clear();
+
+customers = custCtrl.GetAllCustomers();
+foreach (var customer in customers)
+{
+    Console.WriteLine(customer.ToString());
+}
+
 
 conn.Close();

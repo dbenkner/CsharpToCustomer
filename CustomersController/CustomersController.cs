@@ -20,14 +20,7 @@ namespace CustomersControllerProject
             var customers = new List<Customer>();
             while (reader.Read())
             {
-                var cust = new Customer();
-                cust.Id = Convert.ToInt32(reader["Id"]); 
-                cust.Name = Convert.ToString(reader["Name"]); 
-                cust.City = Convert.ToString(reader["City"]); 
-                cust.State = Convert.ToString(reader["State"]); 
-                cust.Sales = Convert.ToDecimal(reader["Sales"]); 
-                cust.Active = Convert.ToBoolean(reader["Active"]);
-                customers.Add(cust);
+                customers.Add(ReturnCustomers(reader));
             }
             reader.Close();
             return customers;
@@ -46,12 +39,7 @@ namespace CustomersControllerProject
             }
             reader.Read();
             var cust = new Customer();
-            cust.Id = Convert.ToInt32(reader["Id"]);
-            cust.Name = Convert.ToString(reader["Name"]);
-            cust.City = Convert.ToString(reader["City"]);
-            cust.State = Convert.ToString(reader["State"]);
-            cust.Sales = Convert.ToDecimal(reader["Sales"]);
-            cust.Active = Convert.ToBoolean(reader["Active"]);
+            cust = ReturnCustomers(reader);
             reader.Close();
             return cust;
         }
@@ -69,12 +57,7 @@ namespace CustomersControllerProject
             }
             reader.Read();
             var cust = new Customer();
-            cust.Id = Convert.ToInt32(reader["Id"]);
-            cust.Name = Convert.ToString(reader["Name"]);
-            cust.City = Convert.ToString(reader["City"]);
-            cust.State = Convert.ToString(reader["State"]);
-            cust.Sales = Convert.ToDecimal(reader["Sales"]);
-            cust.Active = Convert.ToBoolean(reader["Active"]);
+            cust = ReturnCustomers(reader);
             reader.Close();
             return cust;
         }
@@ -138,18 +121,39 @@ namespace CustomersControllerProject
             }
             while (reader.Read())
             {
-                var cust = new Customer();
-                cust.Id = Convert.ToInt32(reader["Id"]);
-                cust.Name = Convert.ToString(reader["Name"]);
-                cust.City = Convert.ToString(reader["City"]);
-                cust.State = Convert.ToString(reader["State"]);
-                cust.Sales = Convert.ToDecimal(reader["Sales"]);
-                cust.Active = Convert.ToBoolean(reader["Active"]);
-                custs.Add(cust);
+                custs.Add(ReturnCustomers(reader));
             }
             reader.Close();
-            return custs;
-            
+            return custs;   
+        }
+        public List<Customer>? GetCustomersByCity(string query)
+        {
+            var sql = "Select * From Customers where City = @City";
+            var cmd = new SqlCommand(sql, sqlConnection);
+            cmd.Parameters.AddWithValue("@City", query);
+            var reader = cmd.ExecuteReader();
+            if(!reader.HasRows)
+            {
+                return null;
+            }
+            var Customers = new List<Customer>();
+            while (reader.Read())
+            {
+                Customers.Add(ReturnCustomers(reader));
+            }
+            reader.Close();
+            return Customers;
+        }
+        public Customer ReturnCustomers(SqlDataReader reader)
+        {
+            var cust = new Customer();
+            cust.Id = Convert.ToInt32(reader["Id"]);
+            cust.Name = Convert.ToString(reader["Name"]);
+            cust.City = Convert.ToString(reader["City"]);
+            cust.State = Convert.ToString(reader["State"]);
+            cust.Sales = Convert.ToDecimal(reader["Sales"]);
+            cust.Active = Convert.ToBoolean(reader["Active"]);
+            return cust;
         }
     }
 }
